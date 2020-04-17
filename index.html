@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>JCS JSON Web Signature 2020</title>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="images/favicon-16x16.png"
+    />
+    <style>
+      #subtitle ~ h2,
+      .copyright,
+      #sotd p:first-of-type {
+        display: none;
+      }
+    </style>
+    <script
+      src="https://www.w3.org/Tools/respec/respec-w3c-common"
+      class="remove"
+    ></script>
+    <script class="remove">
+      var respecConfig = {
+        subtitle: "DIF Working Group Editors Draft",
+        wg: "Credentials & Claims Working Group",
+        logos: [
+          {
+            src:
+              "https://raw.githubusercontent.com/decentralized-identity/decentralized-identity.github.io/master/images/logo-large.png",
+            href: "https://identity.foundation/",
+            alt: "Decentralized Identity Foundation",
+            width: 200,
+            id: "dif-logo",
+          },
+        ],
+        editors: [
+          {
+            name: "Gabe Cohen",
+            url: "https://workday.com",
+            company: "Workday",
+            companyURL:
+              "https://workday.com",
+          },
+          {
+            name: "Orie Steele",
+            url: "https://www.linkedin.com/in/or13b/",
+            company: "Transmute",
+            companyURL: "https://www.transmute.industries/",
+          },
+          
+        ],
+        github: "https://github.com/decentralized-identity/JCSJsonWebSignature2020",
+        edDraftURI:
+          "https://identity.foundation/JCSJsonWebSignature2020/",
+        shortName: "lds-jcs-jws2020",
+        localBiblio:  {
+          "RDF-DATASET-NORMALIZATION": {
+            title:    "RDF Dataset Normalization 1.0",
+            href:     "http://json-ld.github.io/normalization/spec/",
+            authors:  ["David Longley", "Manu Sporny"],
+            status:   "CGDRAFT",
+            publisher:  "JSON-LD Community Group"
+          },
+          "SECURITY-VOCABULARY": {
+            title:    "Security Linked Data Vocabulary",
+            href:     "https://web-payments.org/vocabs/security",
+            authors:  ["Manu Sporny","David Longley"],
+            status:   "CGDRAFT",
+            publisher:  "Web Payments Community Group"
+          },
+          "LD-SIGNATURES": {
+            title:    "Linked Data Signatures 1.0",
+            href:     "https://web-payments.org/specs/source/ld-signatures/",
+            authors:  ["David Longley", "Manu Sporny"],
+            status:   "CGDRAFT",
+            publisher:  "Web Payments Community Group"
+          },
+          "SHA-3": {
+            title:    "SHA-3 Standard: Permutation-Based Has and Extendable-Output Functions",
+            href:     "https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf",
+            status:   "Published",
+            publisher:  "NIST"
+          },
+          "JCS": {
+            title:    "JSON Canonicalization Scheme (JCS)",
+            href:     "https://tools.ietf.org/html/draft-rundgren-json-canonicalization-scheme-16",
+            status:   "CGDRAFT",
+            publisher:  "IETF"
+          },
+          
+
+          
+
+          
+        }
+      };
+    </script>
+  </head>
+
+  <body>
+    <section id="abstract">
+      <p>
+        [[LD-SIGNATURES]] provide an ability to embed integrity and 
+        authentication cryptographic capabilities inside [[JSON]] documents.
+
+        This property is desirable, especially when compared to the opaque 
+        nature of string based representations such as [[JWT]].
+      </p>
+
+      <p>
+        Some implementers do not desire to leverageg [[JSON-LD]], 
+        or other properties of RDF and Linked Data Formats.
+        The purpose of this suite is to define a Linked Data Suite 
+        that does not use [[RDF-DATASET-NORMALIZATION]], but that produces 
+        [[JSON]] documents that look like [[JSON-LD]] documents with [[LD-SIGNATURES]].
+      </p>
+
+      <p>
+        Because this suite cannot assume JSON-LD features such 
+        as <a>documentLoaders</a> or <a>canonicalization algorithm</a>. 
+        Extra guidance is required for implementers who wish to 
+        use this suite without these features.
+      </p>
+
+      <p>
+        This suite is intended to be compatible with existing implementations that might normally
+        require support for JSON-LD.
+      </p>
+      
+    </section>
+
+    <section id="sotd">
+      <p>
+        DID Configuration is a draft specification being developed within the
+        <a href="https://identity.foundation"
+          >Decentralized Identity Foundation</a
+        >
+        (DIF), and intended for registration with <a href="https://w3c-ccg.github.io/ld-cryptosuite-registry/">W3C CCG Linked Data Crypto Suite Registry</a>.
+        This spec will be updated to reflect relevant changes, and participants
+        are encouraged to contribute at the following repository location:
+        <a href="https://github.com/decentralized-identity/JCSJsonWebSignature2020"
+          >https://github.com/decentralized-identity/JCSJsonWebSignature2020</a
+        >
+      </p>
+    </section>
+
+    <section>
+      <h2>Terminology</h2>
+
+      <p>
+        The following terms are used to describe concepts involved in the
+        generation and verification of the JCS JSON Web Signature 2020
+        <a>signature suite</a>.
+              </p>
+        
+              <dl>
+                <dt><dfn>signature suite</dfn></dt>
+                <dd>
+        A specified set of cryptographic primitives typically consisting of
+        a canonicalization algorithm, a message digest algorithm, and a signature
+        algorithm that are bundled together by cryptographers for developers
+        for the purposes of safety and convenience.
+                </dd>
+                <dt><dfn>canonicalization algorithm</dfn></dt>
+                <dd>
+        An algorithm that takes an input document that has more than one possible
+        representation and always transforms it into a canonical form. This process is
+        sometimes also called normalization.
+                </dd>
+                <dt><dfn>message digest algorithm</dfn></dt>
+                <dd>
+        An algorithm that takes an input message and produces a cryptographic
+        output message that is often many orders of magnitude smaller than the
+        input message. These algorithms are often 1) very fast, 2)
+        non-reversible, 3) cause the output to change significantly when even one
+        bit of the input message changes, and 4) make it infeasible to find two
+        different inputs for the same output.
+                </dd>
+                <dt><dfn>signature algorithm</dfn></dt>
+                <dd>
+        An algorithm that takes an input message and produces an output value where the
+        receiver of the message can mathematically verify that the message has not
+        been modified in transit and came from someone possessing a particular secret.
+                </dd>
+
+                <dt> <dfn data-lt="Controller" data-dfn-type="dfn" id="Controller"
+                  >controller</dfn
+                ></dt>
+                <dd>
+                  <p>
+                    See the normative definition
+                    <a
+                      href="https://w3c.github.io/did-core/#dfn-did-controllers"
+                      target="_blank"
+                      >here</a
+                    >, [[vc-data-model]].
+                  </p>
+                </dd>
+
+                <dt> <dfn data-lt="documentLoader" data-dfn-type="dfn" id="documentLoader"
+                  >documentLoader</dfn
+                ></dt>
+                <dd>
+                  <p>
+                    See the normative definition
+                    <a
+                      href="https://www.w3.org/TR/json-ld11-api/#dom-jsonldoptions-documentloader"
+                      target="_blank"
+                      >here</a
+                    >, [[json-ld11-api]].
+                  </p>
+                </dd>
+
+                <dt> <dfn data-lt="verificationMethod" data-dfn-type="dfn" id="verificationMethod"
+                  >verificationMethod</dfn
+                ></dt>
+                <dd>
+                  <p>
+                    See the normative definition
+                    <a
+                      href="https://www.w3.org/TR/json-ld11-api/#dom-jsonldoptions-documentloader"
+                      target="_blank"
+                      >here</a
+                    >, [[json-ld11-api]].
+                  </p>
+                </dd>
+
+          
+              </dl>
+
+
+      
+    </section>
+
+    <section>
+      <h2>Key Format</h2>
+      <section>
+        <h3><dfn>JCS JSON Web Key 2020</dfn></h3>
+        <p>
+          The key format <a href="https://github.com/w3c-ccg/lds-jws2020">JsonWebKey2020</a> is compatible.
+        </p>
+        <p>
+          A JCS JSON Web Key 2020 MUST contain a 
+          <code>publicKeyBase58</code>, or <code>publicKeyJwk</code> property.
+        </p>
+        <pre class="example" title="Example with publicKeyBase58">
+{
+  "id": "did:example:123",
+  "publicKey": [
+    {
+      "id": "did:example:123#key-1",
+      "type": "JcsJsonWebKey2020",
+      "controller": "did:example:123",
+      "publicKeyBase58": "4CcKDtU1JNGi8U4D8Rv9CHzfmF7xzaxEAPFA54eQjRHF"
+    }
+  ]
+}
+        </pre>
+
+        <pre class="example" title="Example with publicKeyJwk">
+{
+  "id": "did:example:123",
+  "publicKey": [
+    {
+      "id": "did:example:123#_Qq0UL2Fq651Q0Fjd6TvnYE-faHiOpRlPVQcY_-tA4A",
+      "type": "JcsJsonWebKey2020",
+      "controller": "did:example:123",
+      "publicKeyJwk": {
+        "crv": "Ed25519",
+        "x": "VCpo2LMLhn6iWku8MKvSLg2ZAoC-nlOyPVQaO3FxVeQ",
+        "kty": "OKP",
+        "kid": "_Qq0UL2Fq651Q0Fjd6TvnYE-faHiOpRlPVQcY_-tA4A"
+      }
+    }
+  ]
+}
+      </pre>
+      </section>
+    </section>
+
+    <section>
+    <h2>Resolving Key Material</h2>
+
+    <section>
+      <h3>JSON-LD</h3>
+      <p>
+        When the suite is used with [[JSON-LD]] a <a>documentLoader</a> 
+        is required to derefence the <a>controller</a> referenced by 
+        <a>verificationMethod</a>.
+      </p>  
+    </section>
+
+    <section>
+      <h3>JSON</h3>
+      <p>
+        When the suite is used with [[JSON]] a verifier MUST derefence the 
+        <a>controller</a> referenced by <a>verificationMethod</a>. 
+        Iterate the properties of the controller and find the key material 
+        matching the  <a>verificationMethod</a> property value in the proof.
+      </p>  
+    </section>
+    
+    </section>  
+
+    <section>
+      <h2>The JCS JSON Web Signature 2020 Signature Suite</h2>
+  
+      <p>
+        This <a>signature suite</a> MUST be used in
+        conjunction with the signing and verification algorithms in the
+        Linked Data Signatures [[LD-SIGNATURES]] specification. The suite consists of
+        the following algorithms:
+              </p>
+        
+              <table class="simple">
+                <thead>
+                  <th>Parameter</th>
+                  <th>Value</th>
+                  <th>Specification</th>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>canonicalizationAlgorithm</td>
+                    <td><a href="https://tools.ietf.org/html/draft-rundgren-json-canonicalization-scheme-16">JSON Canonicalization Scheme (JCS)</a></td>
+                    <td>[[JCS]]</td>
+                  </tr>
+                  <tr>
+                    <td>digestAlgorithm</td>
+                    <td><a href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf">SHA-256</a></td>
+                    <td>[[RFC4634]]</td>
+                  </tr>
+                  <tr>
+                    <td>signatureAlgorithm</td>
+                    <td><a href="https://tools.ietf.org/html/rfc7797">Detached JWS</a></td>
+                    <td>[[RFC7797]]</td>
+                  </tr>
+                </tbody>
+        
+              </table>
+
+              <section>
+                <h2>Modification to Algorithms</h2>
+          
+                <p>
+          The Create Verify Data Algorithm has been replaced with a 
+          deterministic transformation of document to be signed and proof object.
+                </p>
+
+                <div class="issue">TODO: The exact input to the JWS needs to be defined here.</div>
+              </section>
+
+                <section>
+                  <h3><dfn id="JcsJsonWebSignature2020">JCS JSON Web Signature 2020</dfn></h3>
+             
+                  <p>
+                    A document signed with <a>JCS JSON Web Signature 2020</a> MUST contain a <code>proof</code> property.
+                  </p>
+                  <pre class="example" title="Example with DID Document with JcsJsonWebSignature2020 proof">
+{
+  "id": "did:example:123",
+  "publicKey": [
+    {
+      "id": "did:example:123#key-1",
+      "type": "JcsJsonWebKey2020",
+      "controller": "did:example:123",
+      "publicKeyBase58": "4CcKDtU1JNGi8U4D8Rv9CHzfmF7xzaxEAPFA54eQjRHF"
+    }
+  ],
+  "service": [
+    {
+      "id": "schemaID",
+      "type": "schema",
+      "serviceEndpoint": "schemaID"
+    }
+  ],
+  "proof": {
+    "created": "2020-04-17T18:03:18Z",
+    "verificationMethod": "did:example:123#key-1",
+    "nonce": "7bc22433-2ea4-4d30-abf2-2652bebb26c7",
+    "jws": "eyJhbGciOiJFZERTQSJ9..EXIU59Ik7ayisAqsey1jHE6Kc83aPsS3ygh3H0rLctvMWGSkrGZGwskk1wySPF8wd2_-EX59vSl5_M51MoWSBQ",
+    "type": "JcsJsonWebSignature2020"
+  }
+}
+                  </pre>
+          
+                
+                
+              </section>
+      
+      </section>  
+
+
+  
+      <section>
+        <h2>Security Considerations</h2>
+        <p>
+  The following section describes security considerations that developers
+  implementing this specification should be aware of in order to create secure
+  software.
+        </p>
+  
+  <div class="issue">TODO: We need to add a complete list of security
+  considerations.</div>
+      </section>
+
+    <section id="conformance">
+      <p>
+        This document contains examples that contain [[JSON]] and [[JSON-LD]] content.
+        Some of these examples contain characters that are invalid, such as
+        inline comments (<code>//</code>) and the use of ellipsis
+        (<code>...</code>) to denote information that adds little value to the
+        example. Implementers are cautioned to remove this content if they
+        desire to use the information as valid [[JSON]], or [[JSON-LD]].
+      </p>
+
+    </section>
+  </body>
+</html>
