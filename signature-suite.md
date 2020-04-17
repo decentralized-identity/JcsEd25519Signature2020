@@ -1,14 +1,15 @@
-# Workday Signature Suite
+# JCS Json Signature Suite
 - Authors: 
   - Gabe Cohen [gabe.cohen@workday.com](mailto:gabe.cohen@workday.com)
-- Last updated: 2020-04-06
+  - Orie Steele [orie@transmute.industries](mailto:orie@transmute.industries)
+- Last updated: 2020-04-16
 
 ## Status
 - Status: **DRAFT**
 - Status Date: 2019-02-20
 
 ## Abstract
-Operating within the ecosystem of DIDs, Verifiable Credentials, and Distributed Ledger technology, Workday has a vested interest in a consistent, reliable, and secure method to sign over and verify different types of information. Additionally, we have designed the Workday Credentials system to be interoperable with the wider community. In the interest of all listed above, we propose our addition to the [Linked Data Cryptographic Suite Registry](https://w3c-ccg.github.io/ld-cryptosuite-registry).
+There is a gap in the standards space for signing over non-LD JSON in a consistent manner. With the emergence of [JCS](https://tools.ietf.org/id/draft-rundgren-json-canonicalization-scheme-17.html) we propose an additional standard to canonicalize and sign JSON documents. In the interest of all listed above, we propose our addition to the [Linked Data Cryptographic Suite Registry](https://w3c-ccg.github.io/ld-cryptosuite-registry).
 
 ## Contents
   * [Abstract](#abstract)
@@ -36,16 +37,16 @@ This specification is intended to work only on JSON data.
 ### ID
 > A URL that identifies the signature suite. For example: https://w3id.org/security/v1#Ed25519Signature2018.
 
-The URL which hosts. It will be on a publicly facing GitHub repository, or hosted on the credentials site such as: [https://credentials.workday.com/docs/specification/v1.0/signature-suite.md](https://credentials.workday.com/docs/specification/v1.0/signature-suite.md).
+The URL which hosts. It is hosted in the [Decentralized Identity Foundation's GitHub](https://github.com/decentralized-identity/JCSJsonWebSignature2020).
 
 ### Type
 > The value SignatureSuite.
    
-WorkEd25519Signature2020. This type is used to represent proofs.
+JCSJsonWebSignature2020. This type is used to represent proofs.
 
 ## Verification Key
 
-WorkEd25519VerificationKey2020. This type is used to represent keys that specifically generate WorkEd25519Signature2020 signatures.
+JCSJsonVerificationKey2020. This type is used to represent keys that specifically generate JCSJsonWebSignature2020 signatures.
 
 ### Canonicalization Algorithm
 > A URL that identifies the canonicalization algorithm to use on the document. For example: https://w3id.org/security#URDNA2015.
