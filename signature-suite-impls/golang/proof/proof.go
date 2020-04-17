@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	EdSignatureType = "WorkdayEd25519VerificationKey2020"
-	EdType 			= "WorkdayEd25519Signature2020"
+	EdSignatureType = "JCSJsonWebVerificationKey2020"
+	EdType 			= "JCSJsonWebSignature2020"
 )
 
 // Proof a signed proof of a given ledger document

@@ -3,7 +3,7 @@
   "publicKey": [
     {
       "id": "did:work:6sYe1y3zXhmyrBkgHgAgaq#key-1",
-      "type": "WorkdayEd25519Signature2020",
+      "type": "JCSJsonWebVerificationKey2020",
       "controller": "fooIssuer",
       "publicKeyBase58": "4CcKDtU1JNGi8U4D8Rv9CHzfmF7xzaxEAPFA54eQjRHF"
     }
@@ -17,10 +17,10 @@
     }
   ],
   "proof": {
-    "created": "2020-02-21T22:37:48Z",
+    "created": "2020-04-17T18:03:18Z",
     "creator": "did:work:6sYe1y3zXhmyrBkgHgAgaq#key-1",
-    "nonce": "524a497a-871c-4b89-a325-205f78fc5fcd",
-    "signatureValue": "2NuYkfkFy8o4R8iRCaLzTYc1Uss8s22rvC7jiY4BA49sFmWbwbEkQ6BHQPULEp7mPfQQvJdKSjKRLJF8sp62GKvo",
-    "type": "WorkdayEd25519Signature2020"
+    "nonce": "7bc22433-2ea4-4d30-abf2-2652bebb26c7",
+    "signatureValue": "66gZ8becjneQBgETgYAS4xUU6vqfkdxiwzPbG9aWYdEx8GExSMTL8okq3PVwLootVH2GcsVN3H7WCsZqjrR3Us77",
+    "type": "JCSJsonWebSignature2020"
   }
 }

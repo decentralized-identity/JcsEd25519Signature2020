@@ -25,8 +25,8 @@ import java.util.Date;
 
 public final class Proof {
 
-    public static final String ED_VERIFICATION_TYPE = "WorkdayEd25519VerificationKey2020";
-    public static final String ED_TYPE = "WorkdayEd25519Signature2020";
+    public static final String ED_VERIFICATION_TYPE = "JCSJsonWebVerificationKey2020";
+    public static final String ED_TYPE = "JCSJsonWebSignature2020";
     public static final EdDSAParameterSpec ED_SPEC = EdDSANamedCurveTable.getByName(EdDSANamedCurveTable.ED_25519);
 
     private final String created;
