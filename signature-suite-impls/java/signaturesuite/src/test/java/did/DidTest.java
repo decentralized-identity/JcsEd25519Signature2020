@@ -14,7 +14,7 @@ import java.io.FileReader;
 import java.util.Arrays;
 
 import static proof.Proof.ED_SPEC;
-import static proof.Proof.ED_VERIFICATION_TYPE;
+import static proof.Proof.JCS_VERIFICATION_TYPE;
 
 public class DidTest {
 
@@ -62,7 +62,7 @@ public class DidTest {
         final String did = Did.generateDID(new EdDSAPublicKey(pubKey));
         final String keyRef = did + "#" + Did.INITIAL_KEY;
         final String base58PubKey = Base58.encode(pubKey.getA().toByteArray());
-        final KeyDef testKeyDef = new KeyDef(keyRef, ED_VERIFICATION_TYPE, did, base58PubKey);
+        final KeyDef testKeyDef = new KeyDef(keyRef, JCS_VERIFICATION_TYPE, did, base58PubKey);
         final ServiceDef testServiceDef = new ServiceDef("schemaID", "schema", "schemaID");
         final UnsignedDidDoc unsignedDidDoc = new UnsignedDidDoc(did, new KeyDef[]{testKeyDef}, null, new ServiceDef[]{testServiceDef});
         return Did.signDIDDoc(unsignedDidDoc, privKey, keyRef);

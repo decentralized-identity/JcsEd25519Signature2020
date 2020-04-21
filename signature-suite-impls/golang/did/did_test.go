@@ -36,7 +36,7 @@ func TestGenerateDIDDocForIssuerWithServices(t *testing.T) {
 	input := generateDIDDocInput{
 		DID:                  did,
 		FullyQualifiedKeyRef: keyRef,
-		SigningKey:           &issuerPrivKey,
+		SigningKey:           issuerPrivKey,
 		PublicKeys:           publicKeys,
 		Issuer:               issuer,
 		Services:             serviceDef,
@@ -48,6 +48,11 @@ func TestGenerateDIDDocForIssuerWithServices(t *testing.T) {
 	assert.Equal(t, didDoc.UnsignedDIDDoc.PublicKey[0].Controller, issuer)
 	assert.Equal(t, didDoc.Service[0].ID, schemaID)
 	assert.Equal(t, didDoc.PublicKey[0].PublicKeyBase58, base58.Encode(issuerPubKey))
+
+	// uncomment me and set a break point when you need to generate a new did doc
+	didDocBytes, _ := json.Marshal(didDoc)
+	didDocString := string(didDocBytes)
+	assert.NotEmpty(t, didDocString)
 
 	verifyDIDDoc(t, *didDoc, issuerPubKey)
 }
@@ -89,7 +94,7 @@ func verifyDIDDoc(t *testing.T, doc DIDDoc, pubKey ed25519.PublicKey) {
 type generateDIDDocInput struct {
 	DID                  string
 	FullyQualifiedKeyRef string
-	SigningKey           *ed25519.PrivateKey
+	SigningKey           ed25519.PrivateKey
 	PublicKeys           map[string]*ed25519.PublicKey
 	Issuer               string
 	Services             []ServiceDef
@@ -100,7 +105,7 @@ func generateDIDDoc(input generateDIDDocInput) (*DIDDoc, error) {
 	for k, v := range input.PublicKeys {
 		keyEntry := KeyDef{
 			ID:              input.DID + "#" + k,
-			Type:            proof.EdSignatureType,
+			Type:            proof.JCSVerificationType,
 			Controller:      input.Issuer,
 			PublicKeyBase58: base58.Encode(*v),
 		}

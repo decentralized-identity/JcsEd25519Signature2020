@@ -17,10 +17,10 @@
     }
   ],
   "proof": {
-    "created": "2020-04-17T18:03:18Z",
+    "created": "2020-04-20T22:15:36Z",
     "creator": "did:work:6sYe1y3zXhmyrBkgHgAgaq#key-1",
-    "nonce": "7bc22433-2ea4-4d30-abf2-2652bebb26c7",
-    "signatureValue": "66gZ8becjneQBgETgYAS4xUU6vqfkdxiwzPbG9aWYdEx8GExSMTL8okq3PVwLootVH2GcsVN3H7WCsZqjrR3Us77",
+    "nonce": "a17ad960-de23-4078-ab69-9876d70cb8c7",
+    "signatureValue": "5HXz6qjMgNapZtnrmqdUjMfdiKUxAzUeSroYxYt3FwomHRbmiXi7xpv1Dz5wzqv81tfHWjk7vK8RigsuYoPCZBhb",
     "type": "JCSJsonWebSignature2020"
   }
 }

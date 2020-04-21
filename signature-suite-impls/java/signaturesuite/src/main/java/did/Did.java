@@ -6,20 +6,23 @@ import net.i2p.crypto.eddsa.spec.EdDSAPrivateKeySpec;
 import net.i2p.crypto.eddsa.spec.EdDSAPublicKeySpec;
 import org.bitcoinj.core.Base58;
 import proof.Proof;
+import proof.Provable;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.UUID;
 
-public final class Did extends UnsignedDidDoc {
+public final class Did
+        extends UnsignedDidDoc
+        implements Provable {
     public static final String INITIAL_KEY = "key-1";
     public static final String DID_METHOD_PREFIX = "did:work:";
 
-    private final Proof proof;
+    private Proof proof;
 
-    private Did(final UnsignedDidDoc unsignedDidDoc,
-                final Proof proof) {
-        super(unsignedDidDoc.getId(), unsignedDidDoc.getPublicKey(), unsignedDidDoc.getAuthentication(), unsignedDidDoc.getService());
+    private Did(final UnsignedDidDoc unsignedDidDoc, final Proof proof) {
+        super(unsignedDidDoc.getId(), unsignedDidDoc.getPublicKey(), unsignedDidDoc.getAuthentication(),
+                unsignedDidDoc.getService());
         this.proof = proof;
     }
 
@@ -31,19 +34,18 @@ public final class Did extends UnsignedDidDoc {
 
     public static Did signDIDDoc(final UnsignedDidDoc unsignedDidDoc,
                                  final EdDSAPrivateKeySpec privKey,
-                                 final String keyRef) throws Exception {
-        final String didJson = Canonical.toJson(unsignedDidDoc);
-        final String canonicalDidJson = Canonical.canonicalize(didJson);
+                                 final String keyRef)
+            throws Exception {
         final String nonce = UUID.randomUUID().toString();
-        final Proof proof = Proof.createEd25519Proof(canonicalDidJson.getBytes(StandardCharsets.UTF_8), keyRef, privKey, nonce);
-        return new Did(unsignedDidDoc, proof);
+        Did didDoc = new Did(unsignedDidDoc, null);
+        final Proof proof = Proof.createEd25519Proof(didDoc, privKey, keyRef, nonce);
+        didDoc.setProof(proof);
+        return didDoc;
     }
 
-    public static boolean validateDidDocProof(final Did didDoc,
-                                              final EdDSAPublicKeySpec pubKey) throws Exception {
-        final String didJson = Canonical.toJson(didDoc.getUnsignedDidDoc());
-        final String canonicalDidJson = Canonical.canonicalize(didJson);
-        return Proof.verifyEd25519Proof(pubKey, didDoc.getProof(), canonicalDidJson.getBytes());
+    public static boolean validateDidDocProof(final Did didDoc, final EdDSAPublicKeySpec pubKey)
+            throws Exception {
+        return Proof.verifyEd25519Proof(didDoc, pubKey);
     }
 
     public UnsignedDidDoc getUnsignedDidDoc() {
@@ -54,8 +56,15 @@ public final class Did extends UnsignedDidDoc {
         return proof;
     }
 
-    @Override
-    public String toString() {
+    @Override public void setProof(Proof proof) {
+        this.proof = proof;
+    }
+
+    @Override public String toJson() {
+        return Canonical.toJson(this);
+    }
+
+    @Override public String toString() {
         return Canonical.toJson(this);
     }
 }
@@ -92,8 +101,7 @@ class UnsignedDidDoc {
         return service;
     }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
         return Canonical.toJson(this);
     }
 }
@@ -104,10 +112,7 @@ class KeyDef {
     private final String controller;
     private final String publicKeyBase58;
 
-    public KeyDef(final String id,
-                  final String type,
-                  final String controller,
-                  final String publicKeyBase58) {
+    public KeyDef(final String id, final String type, final String controller, final String publicKeyBase58) {
         this.id = id;
         this.type = type;
         this.controller = controller;
@@ -130,8 +135,7 @@ class KeyDef {
         return publicKeyBase58;
     }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
         return Canonical.toJson(this);
     }
 }
@@ -141,9 +145,7 @@ class ServiceDef {
     private final String type;
     private final String serviceEndpoint;
 
-    public ServiceDef(final String id,
-                      final String type,
-                      final String serviceEndpoint) {
+    public ServiceDef(final String id, final String type, final String serviceEndpoint) {
         this.id = id;
         this.type = type;
         this.serviceEndpoint = serviceEndpoint;
@@ -161,8 +163,7 @@ class ServiceDef {
         return serviceEndpoint;
     }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
         return Canonical.toJson(this);
     }
 }
