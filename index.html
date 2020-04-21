@@ -322,18 +322,18 @@
                 <tbody>
                   <tr>
                     <td>canonicalizationAlgorithm</td>
-                    <td><a href="https://tools.ietf.org/html/draft-rundgren-json-canonicalization-scheme-16">JSON Canonicalization Scheme (JCS)</a></td>
+                    <td><a href="https://tools.ietf.org/html/draft-rundgren-json-canonicalization-scheme-17">JSON Canonicalization Scheme (JCS)</a></td>
                     <td>[[JCS]]</td>
                   </tr>
                   <tr>
                     <td>digestAlgorithm</td>
-                    <td><a href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf">SHA-256</a></td>
+                    <td><a href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf">SHA-512</a></td>
                     <td>[[RFC4634]]</td>
                   </tr>
                   <tr>
                     <td>signatureAlgorithm</td>
-                    <td><a href="https://tools.ietf.org/html/rfc7797">Detached JWS</a></td>
-                    <td>[[RFC7797]]</td>
+                    <td><a href="https://tools.ietf.org/html/rfc8032">Ed25519</a></td>
+                    <td>[[RFC8032]]</td>
                   </tr>
                 </tbody>
         
@@ -356,6 +356,19 @@
                   <p>
                     A document signed with <a>JCS JSON Web Signature 2020</a> MUST contain a <code>proof</code> property.
                   </p>
+
+                  <h4><dfn id="ProofGeneration">Proof Generation Algorithm</dfn></></h4>
+
+                  <p>
+                    Proofs are generated using the following algorithm:
+                    <ol>
+                      <li>Take the input document, embeded with a proof block containing all values <i>except</i> the <b>signatureValue</b></li>
+                      <li>Canonicalize the document using JCS</li>
+                      <li>Sign the result with the private key</li>
+                      <li><a href="https://tools.ietf.org/id/draft-msporny-base58-01.html">Base58</a> encode the result and set it as the <b>signatureValue</b> on the document</li>
+                    </ol>
+                  </p>    
+
                   <pre class="example" title="Example with DID Document with JcsJsonWebSignature2020 proof">
 {
   "id": "did:example:123",

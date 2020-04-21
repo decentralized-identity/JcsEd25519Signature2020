@@ -33,7 +33,6 @@ public class DidTest {
             e.printStackTrace();
             Assert.fail(e.getMessage());
         }
-        String v = Canonical.toJson(testDid);
         Assert.assertNotNull(testDid);
         Assert.assertTrue(verifyDIDDoc(testDid, pubKeySpec));
     }
