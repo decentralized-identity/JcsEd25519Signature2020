@@ -29,18 +29,18 @@ public final class Proof {
     public static final EdDSAParameterSpec ED_SPEC = EdDSANamedCurveTable.getByName(EdDSANamedCurveTable.ED_25519);
 
     private final String created;
-    private final String creator;
+    private final String verificationMethod;
     private final String nonce;
     private String signatureValue;
     private final String type;
 
     public Proof(final String created,
-                 final String creator,
+                 final String verificationMethod,
                  final String nonce,
                  final String signatureValue,
                  final String type) {
         this.created = created;
-        this.creator = creator;
+        this.verificationMethod = verificationMethod;
         this.nonce = nonce;
         this.signatureValue = signatureValue;
         this.type = type;
@@ -99,7 +99,7 @@ public final class Proof {
         final Signature sig = new EdDSAEngine(MessageDigest.getInstance(ED_SPEC.getHashAlgorithm()));
 
         // Remove signature and set proof to validate
-        provable.setProof(new Proof(proof.created, proof.creator, proof.nonce, "", proof.type));
+        provable.setProof(new Proof(proof.created, proof.verificationMethod, proof.nonce, "", proof.type));
         final String canonicalDoc = Canonical.canonicalize(provable.toJson());
         final byte[] toVerify = canonicalDoc.getBytes();
 
@@ -117,8 +117,8 @@ public final class Proof {
         return created;
     }
 
-    public String getCreator() {
-        return creator;
+    public String getVerificationMethod() {
+        return verificationMethod;
     }
 
     public String getNonce() {
@@ -142,7 +142,7 @@ public final class Proof {
     }
 
     public boolean isEmpty() {
-        return this.created.equals("") && this.creator.equals("") && this.nonce.equals("")
+        return this.created.equals("") && this.verificationMethod.equals("") && this.nonce.equals("")
                 && this.signatureValue.equals("") && this.type.equals("");
     }
 }

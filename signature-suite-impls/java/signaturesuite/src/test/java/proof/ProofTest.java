@@ -39,7 +39,7 @@ public class ProofTest {
     final EdDSAPublicKeySpec pubKeySpec = new EdDSAPublicKeySpec(privKey.getAbyte(), ED_SPEC);
 
     final String nonce = "0948bb75-60c2-4a92-ad50-01ccee169ae0";
-    final String creatorKey = "did:work:6sYe1y3zXhmyrBkgHgAgaq#key-1";
+    final String verificationMethod = "did:work:6sYe1y3zXhmyrBkgHgAgaq#key-1";
 
     final String testJSON = "{\"some\":\"one\",\"test\":\"two\",\"structure\":\"three\"}";
 
@@ -47,7 +47,7 @@ public class ProofTest {
         Provable provable = new GenericProvable(testJSON);
         Proof proof = null;
         try {
-            proof = Proof.createEd25519Proof(provable, privKeySpec, creatorKey, nonce);
+            proof = Proof.createEd25519Proof(provable, privKeySpec, verificationMethod, nonce);
         }
         catch (Exception e) {
             Assert.fail(e.getMessage());
@@ -55,7 +55,7 @@ public class ProofTest {
         provable.setProof(proof);
 
         Assert.assertEquals(nonce, proof.getNonce());
-        Assert.assertEquals(creatorKey, proof.getCreator());
+        Assert.assertEquals(verificationMethod, proof.getVerificationMethod());
         Assert.assertEquals(JCS_SIGNATURE_TYPE, proof.getType());
 
         try {

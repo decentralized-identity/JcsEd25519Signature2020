@@ -43,7 +43,7 @@ func TestProofGeneration(t *testing.T) {
 	proofUnderTest, err := CreateEd25519Proof(&provable, issuerPrivKey, creatorKey, nonce)
 	assert.NoError(t, err)
 	assert.Equal(t, proofUnderTest.Nonce, nonce)
-	assert.Equal(t, proofUnderTest.Creator, creatorKey)
+	assert.Equal(t, proofUnderTest.VerificationMethod, creatorKey)
 
 	provable.Proof = *proofUnderTest
 	assert.NoError(t, VerifyEd25519Proof(&provable, issuerPubKey))

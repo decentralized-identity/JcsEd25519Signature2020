@@ -8,7 +8,6 @@ import org.bitcoinj.core.Base58;
 import proof.Proof;
 import proof.Provable;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.UUID;
 

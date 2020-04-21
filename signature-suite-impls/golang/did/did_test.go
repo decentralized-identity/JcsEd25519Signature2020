@@ -50,9 +50,9 @@ func TestGenerateDIDDocForIssuerWithServices(t *testing.T) {
 	assert.Equal(t, didDoc.PublicKey[0].PublicKeyBase58, base58.Encode(issuerPubKey))
 
 	// uncomment me and set a break point when you need to generate a new did doc
-	didDocBytes, _ := json.Marshal(didDoc)
-	didDocString := string(didDocBytes)
-	assert.NotEmpty(t, didDocString)
+	//didDocBytes, _ := json.Marshal(didDoc)
+	//didDocString := string(didDocBytes)
+	//assert.NotEmpty(t, didDocString)
 
 	verifyDIDDoc(t, *didDoc, issuerPubKey)
 }

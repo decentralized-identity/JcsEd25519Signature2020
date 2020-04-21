@@ -4,7 +4,6 @@ import (
 	"crypto"
 	cryptorand "crypto/rand"
 	"fmt"
-	"github.com/stretchr/testify/require"
 	"signaturesuite/canonical"
 	"time"
 
@@ -25,11 +24,11 @@ type Provable interface {
 
 // Proof a signed proof of a given ledger document
 type Proof struct {
-	Created        string `json:"created"`
-	Creator        string `json:"creator"`
-	Nonce          string `json:"nonce"`
-	SignatureValue string `json:"signatureValue"`
-	Type           string `json:"type"`
+	Created            string `json:"created"`
+	VerificationMethod string `json:"verificationMethod"`
+	Nonce              string `json:"nonce"`
+	SignatureValue     string `json:"signatureValue"`
+	Type               string `json:"type"`
 }
 
 func CreateEd25519Proof(provable Provable, privKey ed25519.PrivateKey, fullyQualifiedKeyRef, nonce string) (*Proof, error) {
@@ -40,10 +39,10 @@ func CreateEd25519Proof(provable Provable, privKey ed25519.PrivateKey, fullyQual
 
 	// create and set unsigned proof value
 	proof := Proof{
-		Created: time.Now().UTC().Format(time.RFC3339),
-		Creator: fullyQualifiedKeyRef,
-		Nonce:   nonce,
-		Type:    JCSSignatureType,
+		Created:            time.Now().UTC().Format(time.RFC3339),
+		VerificationMethod: fullyQualifiedKeyRef,
+		Nonce:              nonce,
+		Type:               JCSSignatureType,
 	}
 	provable.SetProof(proof)
 
@@ -77,18 +76,16 @@ func VerifyEd25519Proof(provable Provable, pubKey ed25519.PublicKey) error {
 
 	// Remove signature value from proof to validate
 	provable.SetProof(Proof{
-		Created:        proof.Created,
-		Creator:        proof.Creator,
-		Nonce:          proof.Nonce,
-		Type:           proof.Type,
+		Created:            proof.Created,
+		VerificationMethod: proof.VerificationMethod,
+		Nonce:              proof.Nonce,
+		Type:               proof.Type,
 	})
 
 	toSign, err := canonical.Marshal(provable)
 	if err != nil {
 		return err
 	}
-	vvv := string(toSign)
-	require.NotEmpty(nil, vvv)
 
 	if valid := ed25519.Verify(pubKey, toSign, sigBytes); !valid {
 		return fmt.Errorf("failure while verifying signature (b58) %s for pub key (b58) %s", proof.SignatureValue, base58.Encode(pubKey))
