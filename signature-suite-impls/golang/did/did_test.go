@@ -1,10 +1,6 @@
 package did
 
 import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"os"
 	"testing"
 
 	"github.com/mr-tron/base58"
@@ -57,31 +53,6 @@ func TestGenerateDIDDocForIssuerWithServices(t *testing.T) {
 	verifyDIDDoc(t, *didDoc, issuerPubKey)
 }
 
-
-func TestKnownDIDDocSignature(t *testing.T) {
-	// Open our known signed did doc
-	jsonFile, err := os.Open("../../signed-diddoc.json")
-	// if we os.Open returns an error then handle it
-	if err != nil {
-		fmt.Println(err)
-	}
-	// defer the closing of our jsonFile so that we can parse it later on
-	defer jsonFile.Close()
-
-	byteValue, err := ioutil.ReadAll(jsonFile)
-	assert.NoError(t, err)
-
-	var result DIDDoc
-	assert.NoError(t, json.Unmarshal(byteValue, &result))
-
-	// get public key
-	pk := result.PublicKey[0].PublicKeyBase58
-	pkBytes, err := base58.Decode(pk)
-	assert.NoError(t, err)
-
-	verifyDIDDoc(t, result, pkBytes)
-}
-
 func verifyDIDDoc(t *testing.T, doc DIDDoc, pubKey ed25519.PublicKey) {
 	assert.Len(t, doc.PublicKey, 1)
 	assert.NoError(t, ValidateDIDDocProof(doc, pubKey))
@@ -113,9 +84,9 @@ func generateDIDDoc(input generateDIDDocInput) (*DIDDoc, error) {
 	}
 
 	doc := UnsignedDIDDoc{
-		ID:            input.DID,
-		PublicKey:     didPubKeys,
-		Service:       input.Services,
+		ID:        input.DID,
+		PublicKey: didPubKeys,
+		Service:   input.Services,
 	}
 	signedDoc, err := SignDIDDoc(doc, input.SigningKey, input.FullyQualifiedKeyRef)
 	if err != nil {
