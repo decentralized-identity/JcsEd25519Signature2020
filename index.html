@@ -124,8 +124,7 @@
       </p>
 
       <p>
-        This suite is intended to be compatible with existing implementations that might normally
-        require support for JSON-LD.
+        This suite is not compatible with JSON-LD.
       </p>
       
     </section>
@@ -297,7 +296,7 @@
                   </tr>
                   <tr>
                     <td>digestAlgorithm</td>
-                    <td><a href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf">SHA-512</a></td>
+                    <td><a href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf">SHA-256</a></td>
                     <td>[[RFC4634]]</td>
                   </tr>
                   <tr>
@@ -317,7 +316,6 @@
           deterministic transformation of document to be signed and proof object.
                 </p>
 
-                <div class="issue">TODO: The exact input to the JWS needs to be defined here.</div>
               </section>
 
                 <section>
@@ -334,6 +332,7 @@
                     <ol>
                       <li>Take the input document, embeded with a proof block containing all values <i>except</i> the <b>signatureValue</b></li>
                       <li>Canonicalize the document using JCS</li>
+                      <li>Apply the SHA-256 Hash Algorithm.</li>
                       <li>Sign the result with the private key</li>
                       <li><a href="https://tools.ietf.org/id/draft-msporny-base58-01.html">Base58</a> encode the result and set it as the <b>signatureValue</b> on the document</li>
                     </ol>
