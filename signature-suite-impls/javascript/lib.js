@@ -1,6 +1,7 @@
 const nacl = require('tweetnacl')
 const canonicalize = require('canonicalize');
 const bs58 = require('bs58')
+const crypto = require('crypto')
 
 const sign = (docJson, privateKeyUInt8Array) =>{
     const withoutSignature = {
@@ -9,8 +10,8 @@ const sign = (docJson, privateKeyUInt8Array) =>{
     if (withoutSignature.proof){
         delete withoutSignature.proof.signatureValue;
     }
-    const message = Buffer.from(canonicalize(withoutSignature));
-    const signature = nacl.sign(message, privateKeyUInt8Array)
+    const message = Buffer.from(crypto.createHash('sha256').update(canonicalize(withoutSignature)).digest('hex'), 'hex');
+    const signature = nacl.sign(new Uint8Array(message), privateKeyUInt8Array)
     const signatureValue = bs58.encode(Buffer.from(signature))
     withoutSignature.proof.signatureValue = signatureValue
     return withoutSignature;
@@ -31,8 +32,8 @@ const verify = (docJson, publicKeyUInt8Array) =>{
         ...docJson
     }
     delete withoutSignature.proof.signatureValue;
-    const message = canonicalize(withoutSignature);
-    if (Buffer.from(verifiedMessage).toString() !== message){
+    const message = crypto.createHash('sha256').update(canonicalize(withoutSignature));
+    if (message.digest('hex') !== Buffer.from(verifiedMessage).toString('hex')){
         throw new Error('Signature verification failed.')
     }
    return true

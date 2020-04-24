@@ -1,7 +1,25 @@
 {
-  "foo": "bar",
+  "id": "did:example:123",
+  "publicKey": [
+    {
+      "id": "did:example:123#key-1",
+      "type": "JcsEd25519Key2020",
+      "controller": "did:example:123",
+      "publicKeyBase58": "6b23ioXQSAayuw13PGFMCAKqjgqoLTpeXWCy5WRfw28c"
+    }
+  ],
+  "service": [
+    {
+      "id": "schemaID",
+      "type": "schema",
+      "serviceEndpoint": "schemaID"
+    }
+  ],
   "proof": {
-    "type": "JCSJsonWebSignature2020",
-    "signatureValue": "LgLRyP8ooEKM8vatGKqRfRV6hftanfVtzwn6k1ZUZZuSFYXNUX2a999mecezGHg8suvGGWxdnY4C2dDRAbSKn9AhvyxhPSKHjPmp2zPiLtCnnv8Bx67Fi1jhm76HFkfyv3FYPZy9eSTZw47e9BKojhYqH49tDMwJVZNC"
+    "created": "2020-04-17T18:03:18Z",
+    "verificationMethod": "did:example:123#key-1",
+    "nonce": "7bc22433-2ea4-4d30-abf2-2652bebb26c7",
+    "type": "JcsEd25519Signature2020",
+    "signatureValue": "5TcawVLuoqRjCuu4jAmRqBcKoab1YVqxG8RXnQwvQBHNwP7RhPwXhzhTLVu3dKGposo2mmtfx9AwcqB2Mwnagup1JT5Yr9u3SjzLCc6kx4wW6HG5SKcra4SauhutN94s8Eo"
   }
 }

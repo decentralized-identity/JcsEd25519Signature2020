@@ -14,7 +14,7 @@ import (
 
 const (
 	JCSVerificationType = "JCSJsonWebVerificationKey2020"
-	JCSSignatureType    = "JCSJsonWebSignature2020"
+	JCSSignatureType    = "JcsEd25519Signature2020"
 )
 
 type Provable interface {

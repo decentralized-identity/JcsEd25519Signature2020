@@ -21,6 +21,6 @@
     "verificationMethod": "did:work:6sYe1y3zXhmyrBkgHgAgaq#key-1",
     "nonce": "61ff9990-855b-4e04-8d8f-c9151ff0f7e8",
     "signatureValue": "24ezmRVBb8kZyv69Z8rZTLxo9owfq1WXuA9XiCxKjS4r8k8ekB7hWAueonzcPBpxSkiSFVj7F9RXqRcuurKK9JkB",
-    "type": "JCSJsonWebSignature2020"
+    "type": "JcsEd25519Signature2020"
   }
 }
