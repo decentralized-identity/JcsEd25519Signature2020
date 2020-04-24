@@ -1,0 +1,24 @@
+{
+    "id": "did:example:123",
+    "publicKey": [
+      {
+        "id": "did:example:123#key-1",
+        "type": "JcsEd25519Key2020",
+        "controller": "did:example:123",
+        "publicKeyBase58": "6b23ioXQSAayuw13PGFMCAKqjgqoLTpeXWCy5WRfw28c"
+      }
+    ],
+    "service": [
+      {
+        "id": "schemaID",
+        "type": "schema",
+        "serviceEndpoint": "schemaID"
+      }
+    ],
+    "proof": {
+      "created": "2020-04-17T18:03:18Z",
+      "verificationMethod": "did:example:123#key-1",
+      "nonce": "7bc22433-2ea4-4d30-abf2-2652bebb26c7",
+      "type": "JcsEd25519Signature2020"
+    }
+  }

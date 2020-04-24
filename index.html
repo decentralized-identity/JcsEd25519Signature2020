@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>JCS JSON Web Signature 2020</title>
+    <title>JCS Ed25519 Signature 2020</title>
     <link
       rel="icon"
       type="image/png"
@@ -50,9 +50,9 @@
           },
           
         ],
-        github: "https://github.com/decentralized-identity/JCSJsonWebSignature2020",
+        github: "https://github.com/decentralized-identity/JcsEd25519Signature2020",
         edDraftURI:
-          "https://identity.foundation/JCSJsonWebSignature2020/",
+          "https://identity.foundation/JcsEd25519Signature2020/",
         shortName: "lds-jcs-jws2020",
         localBiblio:  {
           "RDF-DATASET-NORMALIZATION": {
@@ -124,8 +124,7 @@
       </p>
 
       <p>
-        This suite is intended to be compatible with existing implementations that might normally
-        require support for JSON-LD.
+        This suite is not compatible with JSON-LD.
       </p>
       
     </section>
@@ -139,8 +138,8 @@
         (DIF), and intended for registration with <a href="https://w3c-ccg.github.io/ld-cryptosuite-registry/">W3C CCG Linked Data Crypto Suite Registry</a>.
         This spec will be updated to reflect relevant changes, and participants
         are encouraged to contribute at the following repository location:
-        <a href="https://github.com/decentralized-identity/JCSJsonWebSignature2020"
-          >https://github.com/decentralized-identity/JCSJsonWebSignature2020</a
+        <a href="https://github.com/decentralized-identity/JcsEd25519Signature2020"
+          >https://github.com/decentralized-identity/JcsEd25519Signature2020</a
         >
       </p>
     </section>
@@ -150,7 +149,7 @@
 
       <p>
         The following terms are used to describe concepts involved in the
-        generation and verification of the JCS JSON Web Signature 2020
+        generation and verification of the JCS Ed25519 Signature 2020
         <a>signature suite</a>.
               </p>
         
@@ -242,7 +241,7 @@
         </p>
         <p>
           A JCS JSON Web Key 2020 MUST contain a 
-          <code>publicKeyBase58</code>, or <code>publicKeyJwk</code> property.
+          <code>publicKeyBase58</code> property.
         </p>
         <pre class="example" title="Example with publicKeyBase58">
 {
@@ -250,7 +249,7 @@
   "publicKey": [
     {
       "id": "did:example:123#key-1",
-      "type": "JcsJsonWebKey2020",
+      "type": "JcsEd25519Key2020",
       "controller": "did:example:123",
       "publicKeyBase58": "4CcKDtU1JNGi8U4D8Rv9CHzfmF7xzaxEAPFA54eQjRHF"
     }
@@ -258,53 +257,23 @@
 }
         </pre>
 
-        <pre class="example" title="Example with publicKeyJwk">
-{
-  "id": "did:example:123",
-  "publicKey": [
-    {
-      "id": "did:example:123#_Qq0UL2Fq651Q0Fjd6TvnYE-faHiOpRlPVQcY_-tA4A",
-      "type": "JcsJsonWebKey2020",
-      "controller": "did:example:123",
-      "publicKeyJwk": {
-        "crv": "Ed25519",
-        "x": "VCpo2LMLhn6iWku8MKvSLg2ZAoC-nlOyPVQaO3FxVeQ",
-        "kty": "OKP",
-        "kid": "_Qq0UL2Fq651Q0Fjd6TvnYE-faHiOpRlPVQcY_-tA4A"
-      }
-    }
-  ]
-}
-      </pre>
       </section>
     </section>
 
     <section>
     <h2>Resolving Key Material</h2>
-
-    <section>
-      <h3>JSON-LD</h3>
-      <p>
-        When the suite is used with [[JSON-LD]] a <a>documentLoader</a> 
-        is required to derefence the <a>controller</a> referenced by 
-        <a>verificationMethod</a>.
-      </p>  
-    </section>
-
-    <section>
-      <h3>JSON</h3>
-      <p>
-        When the suite is used with [[JSON]] a verifier MUST derefence the 
-        <a>controller</a> referenced by <a>verificationMethod</a>. 
-        Iterate the properties of the controller and find the key material 
-        matching the  <a>verificationMethod</a> property value in the proof.
-      </p>  
-    </section>
+    
+    <p>
+      When the suite is used with [[JSON]] a verifier MUST derefence the 
+      <a>controller</a> referenced by <a>verificationMethod</a>. 
+      Iterate the properties of the controller and find the key material 
+      matching the  <a>verificationMethod</a> property value in the proof.
+    </p> 
     
     </section>  
 
     <section>
-      <h2>The JCS JSON Web Signature 2020 Signature Suite</h2>
+      <h2>The JCS Ed25519 Signature 2020 Signature Suite</h2>
   
       <p>
         This <a>signature suite</a> MUST be used in
@@ -327,7 +296,7 @@
                   </tr>
                   <tr>
                     <td>digestAlgorithm</td>
-                    <td><a href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf">SHA-512</a></td>
+                    <td><a href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf">SHA-256</a></td>
                     <td>[[RFC4634]]</td>
                   </tr>
                   <tr>
@@ -347,14 +316,13 @@
           deterministic transformation of document to be signed and proof object.
                 </p>
 
-                <div class="issue">TODO: The exact input to the JWS needs to be defined here.</div>
               </section>
 
                 <section>
-                  <h3><dfn id="JcsJsonWebSignature2020">JCS JSON Web Signature 2020</dfn></h3>
+                  <h3><dfn id="JcsEd25519Signature2020">JCS Ed25519 Signature 2020</dfn></h3>
              
                   <p>
-                    A document signed with <a>JCS JSON Web Signature 2020</a> MUST contain a <code>proof</code> property.
+                    A document signed with <a>JCS Ed25519 Signature 2020</a> MUST contain a <code>proof</code> property.
                   </p>
 
                   <h4><dfn id="ProofGeneration">Proof Generation Algorithm</dfn></></h4>
@@ -364,20 +332,21 @@
                     <ol>
                       <li>Take the input document, embeded with a proof block containing all values <i>except</i> the <b>signatureValue</b></li>
                       <li>Canonicalize the document using JCS</li>
+                      <li>Apply the SHA-256 Hash Algorithm.</li>
                       <li>Sign the result with the private key</li>
                       <li><a href="https://tools.ietf.org/id/draft-msporny-base58-01.html">Base58</a> encode the result and set it as the <b>signatureValue</b> on the document</li>
                     </ol>
                   </p>    
 
-                  <pre class="example" title="Example with DID Document with JcsJsonWebSignature2020 proof">
+                  <pre class="example" title="Example with DID Document with JcsEd25519Signature2020 proof">
 {
   "id": "did:example:123",
   "publicKey": [
     {
       "id": "did:example:123#key-1",
-      "type": "JcsJsonWebKey2020",
+      "type": "JcsEd25519Key2020",
       "controller": "did:example:123",
-      "publicKeyBase58": "4CcKDtU1JNGi8U4D8Rv9CHzfmF7xzaxEAPFA54eQjRHF"
+      "publicKeyBase58": "6b23ioXQSAayuw13PGFMCAKqjgqoLTpeXWCy5WRfw28c"
     }
   ],
   "service": [
@@ -391,8 +360,8 @@
     "created": "2020-04-17T18:03:18Z",
     "verificationMethod": "did:example:123#key-1",
     "nonce": "7bc22433-2ea4-4d30-abf2-2652bebb26c7",
-    "jws": "eyJhbGciOiJFZERTQSJ9..EXIU59Ik7ayisAqsey1jHE6Kc83aPsS3ygh3H0rLctvMWGSkrGZGwskk1wySPF8wd2_-EX59vSl5_M51MoWSBQ",
-    "type": "JcsJsonWebSignature2020"
+    "type": "JcsEd25519Signature2020",
+    "signatureValue": "5TcawVLuoqRjCuu4jAmRqBcKoab1YVqxG8RXnQwvQBHNwP7RhPwXhzhTLVu3dKGposo2mmtfx9AwcqB2Mwnagup1JT5Yr9u3SjzLCc6kx4wW6HG5SKcra4SauhutN94s8Eo"
   }
 }
                   </pre>

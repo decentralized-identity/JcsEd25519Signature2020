@@ -1,1 +1,1 @@
-A JavaScript Implementation of `JCSJsonWebSignature2020`.
+A JavaScript Implementation of `JcsEd25519Signature2020`.

@@ -37,16 +37,16 @@ This specification is intended to work only on JSON data.
 ### ID
 > A URL that identifies the signature suite. For example: https://w3id.org/security/v1#Ed25519Signature2018.
 
-The URL which hosts. It is hosted in the [Decentralized Identity Foundation's GitHub](https://github.com/decentralized-identity/JCSJsonWebSignature2020).
+The URL which hosts. It is hosted in the [Decentralized Identity Foundation's GitHub](https://github.com/decentralized-identity/JcsEd25519Signature2020).
 
 ### Type
 > The value SignatureSuite.
    
-JCSJsonWebSignature2020. This type is used to represent proofs.
+JcsEd25519Signature2020. This type is used to represent proofs.
 
 ## Verification Key
 
-JCSJsonVerificationKey2020. This type is used to represent keys that specifically generate JCSJsonWebSignature2020 signatures.
+JCSJsonVerificationKey2020. This type is used to represent keys that specifically generate JcsEd25519Signature2020 signatures.
 
 ### Canonicalization Algorithm
 > A URL that identifies the canonicalization algorithm to use on the document. For example: https://w3id.org/security#URDNA2015.
