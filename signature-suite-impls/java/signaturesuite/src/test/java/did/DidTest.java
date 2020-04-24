@@ -1,7 +1,5 @@
 package did;
 
-import canonical.Canonical;
-import com.google.gson.Gson;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
 import net.i2p.crypto.eddsa.spec.EdDSAPrivateKeySpec;
@@ -10,8 +8,6 @@ import org.bitcoinj.core.Base58;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.Arrays;
 
 import static proof.Proof.ED_SPEC;
@@ -35,28 +31,6 @@ public class DidTest {
         }
         Assert.assertNotNull(testDid);
         Assert.assertTrue(verifyDIDDoc(testDid, pubKeySpec));
-    }
-
-    @Test
-    public void didTestKnownSignature() {
-        final Gson gson = new Gson();
-        try {
-            final BufferedReader br = new BufferedReader(new FileReader("../../signed-diddoc.json"));
-            final Did did = gson.fromJson(br, Did.class);
-            Assert.assertNotNull(did);
-
-            // Get public key
-            final String pubKeyBase58 = did.getPublicKey()[0].getPublicKeyBase58();
-            final byte[] pubKey = Base58.decode(pubKeyBase58);
-            final EdDSAPublicKeySpec pubKeySpec = new EdDSAPublicKeySpec(pubKey, ED_SPEC);
-
-            // Validate signature
-            Assert.assertTrue(Did.validateDidDocProof(did, pubKeySpec));
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-
     }
 
     private static Did generateTestDidDoc(EdDSAPublicKeySpec pubKey, EdDSAPrivateKeySpec privKey) throws Exception {

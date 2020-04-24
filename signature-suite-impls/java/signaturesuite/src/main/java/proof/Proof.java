@@ -24,8 +24,8 @@ import java.util.Date;
 
 public final class Proof {
 
-    public static final String JCS_VERIFICATION_TYPE = "JCSJsonWebVerificationKey2020";
-    public static final String JCS_SIGNATURE_TYPE = "JCSJsonWebSignature2020";
+    public static final String JCS_VERIFICATION_TYPE = "JcsEd25519Key2020";
+    public static final String JCS_SIGNATURE_TYPE = "JcsEd25519Signature2020";
     public static final EdDSAParameterSpec ED_SPEC = EdDSANamedCurveTable.getByName(EdDSANamedCurveTable.ED_25519);
 
     private final String created;
@@ -46,9 +46,46 @@ public final class Proof {
         this.type = type;
     }
 
+    public static Proof genericEd25519Signature(final String input,
+                                                final EdDSAPrivateKey privKey,
+                                                final boolean created,
+                                                final String verificationMethod,
+                                                final String nonce) throws NoSuchAlgorithmException, SignatureException, IOException, InvalidKeyException {
+
+        final Signature sgr = new EdDSAEngine(MessageDigest.getInstance(ED_SPEC.getHashAlgorithm()));
+        sgr.initSign(privKey);
+
+
+        String createdTime = "";
+        if (created) {
+            createdTime = Proof.getRFC3339Time();
+        }
+
+        // create and set unsigned proof value
+        Proof proof = new Proof(createdTime, verificationMethod, nonce, "", JCS_SIGNATURE_TYPE);
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final String canonicalDoc = Canonical.canonicalize(input);
+
+        final byte[] canonicalBytes = canonicalDoc.getBytes();
+        baos.write(canonicalBytes);
+        final byte[] toSign = baos.toByteArray();
+        baos.close();
+
+        // do the signing
+        sgr.update(toSign);
+        final byte[] signature = sgr.sign();
+
+        // base58 encode signature
+        final String base58Signature = Base58.encode(signature);
+
+        proof.setSignatureValue(base58Signature);
+        return proof;
+    }
+
     public static Proof createEd25519Proof(final Provable provable,
                                            final EdDSAPrivateKeySpec privKey,
-                                           final String keyRef,
+                                           final String verificationMethod,
                                            final String nonce)
             throws InvalidKeyException, SignatureException, IOException, NoSuchAlgorithmException {
 
@@ -62,7 +99,7 @@ public final class Proof {
         }
 
         // create and set unsigned proof value
-        proof = new Proof(Proof.getRFC3339Time(), keyRef, nonce, "", JCS_SIGNATURE_TYPE);
+        proof = new Proof(Proof.getRFC3339Time(), verificationMethod, nonce, "", JCS_SIGNATURE_TYPE);
         provable.setProof(proof);
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -137,7 +174,8 @@ public final class Proof {
         return type;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return Canonical.toJson(this);
     }
 
