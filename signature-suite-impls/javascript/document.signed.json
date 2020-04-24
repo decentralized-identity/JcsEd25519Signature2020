@@ -1,0 +1,7 @@
+{
+  "foo": "bar",
+  "proof": {
+    "type": "JCSJsonWebSignature2020",
+    "signatureValue": "LgLRyP8ooEKM8vatGKqRfRV6hftanfVtzwn6k1ZUZZuSFYXNUX2a999mecezGHg8suvGGWxdnY4C2dDRAbSKn9AhvyxhPSKHjPmp2zPiLtCnnv8Bx67Fi1jhm76HFkfyv3FYPZy9eSTZw47e9BKojhYqH49tDMwJVZNC"
+  }
+}
