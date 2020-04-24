@@ -1,5 +1,5 @@
 {
-  "name": "lds-jcs-jws2020",
+  "name": "jcs-jws2020",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,10 +9,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "base64url": "^3.0.1",
-    "crypto-ld": "^3.7.0",
     "jest": "^24.9.0",
-    "jose": "^1.16.2",
     "canonicalize": "^1.0.1"
+  },
+  "dependencies": {
+    "bs58": "^4.0.1",
+    "tweetnacl": "^1.0.3"
   }
 }
