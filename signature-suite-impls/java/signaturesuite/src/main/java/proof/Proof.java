@@ -12,7 +12,6 @@ import org.bitcoinj.core.Base58;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -25,45 +24,53 @@ import java.util.Date;
 
 public final class Proof {
 
-    public static final String ED_VERIFICATION_TYPE = "JCSJsonWebVerificationKey2020";
-    public static final String ED_TYPE = "JCSJsonWebSignature2020";
+    public static final String JCS_VERIFICATION_TYPE = "JCSJsonWebVerificationKey2020";
+    public static final String JCS_SIGNATURE_TYPE = "JCSJsonWebSignature2020";
     public static final EdDSAParameterSpec ED_SPEC = EdDSANamedCurveTable.getByName(EdDSANamedCurveTable.ED_25519);
 
     private final String created;
-    private final String creator;
+    private final String verificationMethod;
     private final String nonce;
-    private final String signatureValue;
+    private String signatureValue;
     private final String type;
 
     public Proof(final String created,
-                 final String creator,
+                 final String verificationMethod,
                  final String nonce,
                  final String signatureValue,
                  final String type) {
         this.created = created;
-        this.creator = creator;
+        this.verificationMethod = verificationMethod;
         this.nonce = nonce;
         this.signatureValue = signatureValue;
         this.type = type;
     }
 
-    public static Proof createEd25519Proof(final byte[] unsignedDoc,
-                                           final String keyRef,
+    public static Proof createEd25519Proof(final Provable provable,
                                            final EdDSAPrivateKeySpec privKey,
-                                           final String nonce) throws InvalidKeyException, SignatureException, IOException, NoSuchAlgorithmException {
+                                           final String keyRef,
+                                           final String nonce)
+            throws InvalidKeyException, SignatureException, IOException, NoSuchAlgorithmException {
 
         final Signature sgr = new EdDSAEngine(MessageDigest.getInstance(ED_SPEC.getHashAlgorithm()));
         final PrivateKey sKey = new EdDSAPrivateKey(privKey);
         sgr.initSign(sKey);
 
-        // append nonce to doc to sign
-        final byte[] nonceBytes = ("." + nonce).getBytes();
+        Proof proof = provable.getProof();
+        if (proof != null && !proof.signatureValue.equals("")) {
+            throw new SignatureException("Proof already contains signature.");
+        }
 
-        // combine signature with nonce
+        // create and set unsigned proof value
+        proof = new Proof(Proof.getRFC3339Time(), keyRef, nonce, "", JCS_SIGNATURE_TYPE);
+        provable.setProof(proof);
+
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        baos.write(unsignedDoc);
-        baos.write(nonceBytes);
+        final String canonicalDoc = Canonical.canonicalize(provable.toJson());
+        final byte[] canonicalBytes = canonicalDoc.getBytes();
+        baos.write(canonicalBytes);
         final byte[] toSign = baos.toByteArray();
+        baos.close();
 
         // do the signing
         sgr.update(toSign);
@@ -72,33 +79,34 @@ public final class Proof {
         // base58 encode signature
         final String base58Signature = Base58.encode(signature);
 
-        return new Proof(Proof.getRFC3339Time(), keyRef, nonce, base58Signature, ED_TYPE);
+        proof.setSignatureValue(base58Signature);
+        return proof;
     }
 
-    public static boolean verifyEd25519Proof(final EdDSAPublicKeySpec pubKey,
-                                             final Proof proofUnderTest,
-                                             final byte[] bytesToProve) throws IOException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-        if (!proofUnderTest.type.equals(ED_TYPE)) {
+    public static boolean verifyEd25519Proof(final Provable provable, final EdDSAPublicKeySpec pubKey)
+            throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
+        Proof proof = provable.getProof();
+        if (proof.isEmpty()) {
+            return false;
+        }
+        if (!proof.type.equals(JCS_SIGNATURE_TYPE)) {
             // we only know how to handle our own type
             return false;
         }
 
-        final Signature sgr = new EdDSAEngine(MessageDigest.getInstance(ED_SPEC.getHashAlgorithm()));
-
-        // Add nonce back in
-        final byte[] nonceBytes = ("." + proofUnderTest.nonce).getBytes(StandardCharsets.UTF_8);
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        baos.write(bytesToProve);
-        baos.write(nonceBytes);
-        final byte[] toVerify = baos.toByteArray();
-
         // Decode signature
-        final byte[] signature = Base58.decode(proofUnderTest.signatureValue);
+        final byte[] signature = Base58.decode(proof.signatureValue);
+        final Signature sig = new EdDSAEngine(MessageDigest.getInstance(ED_SPEC.getHashAlgorithm()));
 
-        final PublicKey vKey = new EdDSAPublicKey(pubKey);
-        sgr.initVerify(vKey);
-        sgr.update(toVerify);
-        return sgr.verify(signature);
+        // Remove signature and set proof to validate
+        provable.setProof(new Proof(proof.created, proof.verificationMethod, proof.nonce, "", proof.type));
+        final String canonicalDoc = Canonical.canonicalize(provable.toJson());
+        final byte[] toVerify = canonicalDoc.getBytes();
+
+        final PublicKey verificationKey = new EdDSAPublicKey(pubKey);
+        sig.initVerify(verificationKey);
+        sig.update(toVerify);
+        return sig.verify(signature);
     }
 
     private static String getRFC3339Time() {
@@ -109,8 +117,8 @@ public final class Proof {
         return created;
     }
 
-    public String getCreator() {
-        return creator;
+    public String getVerificationMethod() {
+        return verificationMethod;
     }
 
     public String getNonce() {
@@ -121,12 +129,20 @@ public final class Proof {
         return signatureValue;
     }
 
+    public void setSignatureValue(String signatureValue) {
+        this.signatureValue = signatureValue;
+    }
+
     public String getType() {
         return type;
     }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
         return Canonical.toJson(this);
+    }
+
+    public boolean isEmpty() {
+        return this.created.equals("") && this.verificationMethod.equals("") && this.nonce.equals("")
+                && this.signatureValue.equals("") && this.type.equals("");
     }
 }
