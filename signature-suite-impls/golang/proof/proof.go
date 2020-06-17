@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	JCSVerificationType = "JcsEd25519Key2020"
+	JCSVerificationType = "Ed25519VerificationKey2018"
 	JCSSignatureType    = "JcsEd25519Signature2020"
 )
 

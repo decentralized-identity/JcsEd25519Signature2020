@@ -24,7 +24,7 @@ import java.util.Date;
 
 public final class Proof {
 
-    public static final String JCS_VERIFICATION_TYPE = "JcsEd25519Key2020";
+    public static final String JCS_VERIFICATION_TYPE = "Ed25519VerificationKey2018";
     public static final String JCS_SIGNATURE_TYPE = "JcsEd25519Signature2020";
     public static final EdDSAParameterSpec ED_SPEC = EdDSANamedCurveTable.getByName(EdDSANamedCurveTable.ED_25519);
 
