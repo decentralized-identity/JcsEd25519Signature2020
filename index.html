@@ -340,28 +340,30 @@
 
                   <pre class="example" title="Example with DID Document with JcsEd25519Signature2020 proof">
 {
-  "id": "did:example:123",
+  "id": "did:test:36FC2p3yXoxcoVBn73qxPx",
   "publicKey": [
     {
-      "id": "did:example:123#key-1",
+      "id": "did:test:36FC2p3yXoxcoVBn73qxPx#key-1",
       "type": "Ed25519VerificationKey2018",
-      "controller": "did:example:123",
-      "publicKeyBase58": "6b23ioXQSAayuw13PGFMCAKqjgqoLTpeXWCy5WRfw28c"
+      "controller": "did:test:36FC2p3yXoxcoVBn73qxPx",
+      "publicKeyBase58": "295nPvQHCdfXT8N275Hme434Z2NqZY5y3NN7rdts8Ew1"
     }
   ],
+  "authentication": null,
   "service": [
     {
-      "id": "schemaID",
-      "type": "schema",
-      "serviceEndpoint": "schemaID"
+      "id": "test-service-1",
+      "type": "test-service",
+      "serviceEndpoint": "https://test-service.com/test-service"
     }
   ],
   "proof": {
-    "created": "2020-04-17T18:03:18Z",
-    "verificationMethod": "did:example:123#key-1",
-    "nonce": "7bc22433-2ea4-4d30-abf2-2652bebb26c7",
-    "type": "JcsEd25519Signature2020",
-    "signatureValue": "5TcawVLuoqRjCuu4jAmRqBcKoab1YVqxG8RXnQwvQBHNwP7RhPwXhzhTLVu3dKGposo2mmtfx9AwcqB2Mwnagup1JT5Yr9u3SjzLCc6kx4wW6HG5SKcra4SauhutN94s8Eo"
+    "created": "2020-09-24T16:43:29Z",
+    "proofPurpose": "assertionMethod",
+    "verificationMethod": "did:test:36FC2p3yXoxcoVBn73qxPx#key-1",
+    "nonce": "fd2ccdaa-a9eb-4927-9ad2-3c0ad84546d5",
+    "signatureValue": "2Ha72f5KqowpAeLxF2UvDBYgknLiHeBk9W6g7FHhPTd26M5qDgSfmWrpJareNp3bb9apwfUKysjFmbFcEN4LXLg7",
+    "type": "JcsEd25519Signature2020"
   }
 }
                   </pre>
